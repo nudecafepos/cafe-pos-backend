@@ -15,12 +15,15 @@
   <p id="result"></p>
 
   <script>
-    const form = document.getElementById('orderForm');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const items = form.items.value;
-      const total = form.total.value;
+  const form = document.getElementById('orderForm');
+  const result = document.getElementById('result');
 
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const items = form.items.value;
+    const total = form.total.value;
+
+    try {
       const res = await fetch('/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -28,9 +31,18 @@
       });
 
       const data = await res.json();
-      document.getElementById('result').textContent =
-        data.orderId ? `Order placed! ID: ${data.orderId}` : `Error: ${data.error}`;
-    });
-  </script>
+
+      if (data.orderId) {
+        result.textContent = `✅ Order placed! ID: ${data.orderId}`;
+        form.reset(); // clear the form after success
+      } else {
+        result.textContent = `❌ Error: ${data.error}`;
+      }
+    } catch (err) {
+      result.textContent = `❌ Request failed: ${err.message}`;
+    }
+  });
+</script>
+
 </body>
 </html>
