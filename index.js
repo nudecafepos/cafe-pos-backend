@@ -6,6 +6,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ✅ Serve static files from "public" folder
+app.use(express.static('public'));
+
 // Initialize Firebase Admin using environment variables
 admin.initializeApp({
   credential: admin.credential.cert({

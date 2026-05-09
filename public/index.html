@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Café POS</title>
+</head>
+<body>
+  <h1>Place an Order</h1>
+
+  <form id="orderForm">
+    <label>Items (comma separated):</label><br>
+    <input type="text" id="items" placeholder="Latte, Iced Tea"><br><br>
+
+    <label>Total:</label><br>
+    <input type="number" id="total" placeholder="200"><br><br>
+
+    <button type="submit">Submit Order</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const items = document.getElementById('items').value.split(',').map(i => i.trim());
+      const total = parseFloat(document.getElementById('total').value);
+
+      try {
+        // IMPORTANT: use full backend URL if opening index.html directly
+        const res = await fetch('https://cafe-pos-backend-k6dt.onrender.com/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items, total })
+        });
+        const data = await res.json();
+        document.getElementById('result').innerText = "Order saved! ID: " + data.orderId;
+      } catch (err) {
+        document.getElementById('result').innerText = "Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
